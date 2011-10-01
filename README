@@ -1,0 +1,24 @@
+
+YAPC::Asia Tokyo 2011 タイムテーブル Chrome Extension
+
+WARNING: オフィシャルのツールではありません。
+
+タイムテーブルに素早くアクセスするための Chrome Extensionです。
+
+2011/9/30 の時点のタイムテーブルを内部に持っており、オフライン時は
+こちらが表示されます。
+
+オンライン状態であれば、http://yapcasia.org/2011/timetable.html の
+サイトのタイムテーブルを表示します。
+
+
+インストール
+
+YAPC-Asia-2011-TimeTable.crx ファイルをChromeにD&Dしてください。
+
+https://github.com/onopm/YAPC-Asia-2011-TimeTable/raw/master/YAPC-Asia-2011-TimeTable.crx
+
+chrome://extensions/ のデベロッパモードにて、"パッケージ化されていない機能拡張を読み込む"
+でソースコードディレクトリを指定しても使えます。
+
+

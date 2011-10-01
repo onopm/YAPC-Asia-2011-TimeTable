@@ -1,0 +1,153 @@
+<html>
+<head>
+<title>YAPC::Asia Tokyo 2011 Timetable</title>
+<script type="text/javascript" src="lib/jquery-1.6.4.min.js"></script>
+<script>
+function reload() {
+    chrome.extension.getBackgroundPage().reload();
+    loadTimeTable();
+}
+
+function loadMessage() {
+    $('#message').text(chrome.extension.getBackgroundPage().message);
+}
+
+function loadTimeTable() {
+    var timetables = chrome.extension.getBackgroundPage().timetables;
+    var tabs = $('<ul/>');
+
+    $(timetables).each( function() {
+        $('#timetables').append(this);
+    });
+
+    $(".date-header").each( function(i) {
+        var id = chrome.extension.getBackgroundPage().day2id( $(this).children().text() );
+
+        var link = $('<a/>').addClass('tab');
+            link.attr('href', '#');
+            link.attr('title', id);
+            link.text( $(this).children().text() );
+            tabs.append( $('<li/>').append(link) );
+    });
+    $('#tabs').empty();
+    $('#tabs').append(tabs);
+
+    $('.section').css('display','none');
+    $('#14-2011').css('display','block');     // default open 2011-14. 
+
+}
+
+$(function(){
+
+    loadMessage();
+    loadTimeTable();
+    loadMessage();
+
+    $('.tab').live('click', function() {
+        $('.section').css('display','none');
+        $('#'+this.title).css('display','block');
+        return false;
+    });
+
+    $('#reload').live('click', function() {
+        reload();
+    });
+
+    // ????
+    $('a').live('click', function() {
+        if( $(this).attr('href') == '#') return;
+        //console.log("open:"+$(this).attr('href') );
+        chrome.tabs.create({
+            'url': $(this).attr('href'),
+        });
+        return false;
+    });
+});
+</script>
+<style>
+body {
+    font: 80% Helvetica, Arial, sans-serif;
+    width: 540px;
+    margin: 0px;
+    overflow-x: hidden;
+}
+a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover { text-decoration: underline }
+
+#header {
+    height: 45px;
+    border-bottom: dotted #0487B5;
+}
+#container {
+    clear: both;
+}
+ul {
+    list-style-type: none;
+}
+ul li{
+    float: left;
+}
+.tab {
+    margin: 0px 10px;
+    text-decoration: none;
+    background-color: #EEE;
+}
+table {
+    border-collapse: collapse;
+    width: 96%;
+}
+table.timetable {
+    font-size: 9pt;
+    font-family: Arial, sans-serif;
+}
+table.timetable tr td {
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    vertical-align: top;
+}
+table.timetable tr td.empty {
+    background-color: #ccc;
+    vertical-align: middle;
+}
+table.timetable tr th {
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    font-weight: bold;
+}
+#title {
+    text-align: center;
+}
+#message {
+    float:right;
+    margin-right: 40px;
+    color: red;
+    font-weight: bold;
+}
+#reload {
+    float:right;
+    margin-right: 40px;
+}
+</style>
+</head>
+<body>
+    <div id="header">
+        <div id="message"></div>
+        <div id="title">
+            <a href="http://yapcasia.org/2011/">YAPC::Asia Tokyo 2011</a>
+        </div>
+        <div id="reload">
+            <a href="#">reload</a> 
+        </div>
+        <div id="tabs"></div>
+    </div><!-- / #header / -->
+    <div id="container">
+        <div id="timetables"></div>
+    </div><!-- / #container / -->
+</body>
+</html>

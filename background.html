@@ -1,0 +1,68 @@
+<html>
+<head>
+<script type="text/javascript" src="lib/jquery-1.6.4.min.js"></script>
+<script>
+var xhr;
+var message = 'init.';
+var timetables = [];
+
+function reload() { 
+    getRemoteTable();
+}
+
+function day2id(day) {
+    //Oct 13, 2011 => 13-2011
+    return day.replace(/\s+/g,'').replace(/,/g,'-').replace(/[a-z]/ig,'');
+}
+
+function getLocalTable() {
+    xhr = new XMLHttpRequest();
+    var url = chrome.extension.getURL('/lib/timetable.html');
+    console.log("GET:" + url);
+
+    xhr.open('GET', url, false);
+    xhr.onreadystatechange = handleStateChange;
+    xhr.send();
+}
+
+function getRemoteTable() {
+    xhr = new XMLHttpRequest();
+    var url = "http://yapcasia.org/2011/timetable.html";
+    console.log("GET:" + url);
+
+    xhr.open('GET', url, true);
+    xhr.onreadystatechange = handleStateChange;
+    xhr.send();
+}
+
+//xhr.onreadystatechange = function() {
+function handleStateChange() {
+    try {
+        if (xhr.readyState == 4) {
+            if(xhr.status == 200){
+                message = '';
+                console.log("GET success:"+xhr.status);
+                timetables = [];
+                var page = jQuery( xhr.responseText );
+                page.find(".date-header").each( function() {
+                    //console.log("get:"+ $(this).children().text() );
+                    var id = day2id( $(this).children().text() );
+                    $(this).parent().attr("id", id);
+                    timetables.push( $(this).parent() );
+                });
+            }
+            else{
+                console.log("GET error:"+xhr.status);
+                message = 'network error';
+            }
+        }
+    } catch(e) { message = 'network error'; };
+}
+
+getLocalTable();   // no async
+
+getRemoteTable();  // async
+
+</script>
+</head>
+</html>
